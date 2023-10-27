@@ -3,6 +3,7 @@ const morgan = require("morgan")
 //Rutas
 const usuarioRouter = require("../router/usuario.router")
 const estadoRouter = require("../router/estado.router")
+const direccionRouter = require("../router/direccion.router")
 
 const app = express()
 
@@ -17,7 +18,7 @@ app.use(express.json())
 
 app.use("/api/v1/", usuarioRouter)
 app.use("/api/v1/", estadoRouter);
-
+app.use("/api/v1/", direccionRouter);
 
 
 module.exports = app;

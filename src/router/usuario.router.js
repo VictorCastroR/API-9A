@@ -27,8 +27,8 @@ router.get("/usuarios/:id", async (req, res) => {
 })
 
 router.post("/usuarios", async (req, res) => {
-    const dataUsers = req.body //Esta variable obtiene el cuerpo del json entrante
-    await Usuario.sync()
+    const dataUsers = req.body 
+    //await Usuario.sync()
     const createUsuario = await Usuario.create({
       //Este codigo ayuda a crear campos predeterminados, 
         /* nombre: faker.person.fullName(),
@@ -45,7 +45,8 @@ router.post("/usuarios", async (req, res) => {
         res.status(201).json({
             ok: true,
             status: 201,
-            message: "Created User"
+            message: "Created User",
+            body: createUsuario
 
     })  
 })

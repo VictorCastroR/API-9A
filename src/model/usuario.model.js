@@ -2,10 +2,6 @@ const { Model, DataTypes} = require('sequelize')
 const sequelize = require('../config/sequelize-config');
 const Estado = require('./estado.model');
 
-
-
-
-
     class Usuario extends Model {}
 
     Usuario.init({
