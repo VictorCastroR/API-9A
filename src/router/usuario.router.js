@@ -45,7 +45,7 @@ router.post("/usuarios", async (req, res) => {
         res.status(201).json({
             ok: true,
             status: 201,
-            message: "Created User",
+            message: "Created Usuario",
             body: createUsuario
 
     })  
@@ -83,7 +83,6 @@ router.delete("/usuarios/:id", async (req, res) => {
      ok: true,
      status: 204,
      message: "Updated User",
-     body: deleteUsuario
  })  
 
 

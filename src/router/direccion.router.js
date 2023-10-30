@@ -95,8 +95,6 @@ router.put("/direcciones/:direccionId/:usuarioId", async (req, res) => {
         }
 
         if (direccion.usuario_id.toString() !== usuarioId) {
-            console.log("Tu usuario es: ",usuarioId)
-            console.log("Tu usuario tiene que ser: ",direccion.usuario_id)
             return res.status(403).json({
                 ok: false,
                 status: 403,
