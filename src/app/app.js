@@ -5,6 +5,7 @@ const usuarioRouter = require("../router/usuario.router")
 const estadoRouter = require("../router/estado.router")
 const direccionRouter = require("../router/direccion.router")
 const puntoEntregaRouter = require("../router/puntoEntrega.router")
+const paqueteRouter = require("../router/paquete.router")
 
 const app = express()
 
@@ -21,6 +22,7 @@ app.use("/api/v1/", usuarioRouter)
 app.use("/api/v1/", estadoRouter);
 app.use("/api/v1/", direccionRouter);
 app.use("/api/v1/", puntoEntregaRouter);
+app.use("/api/v1/", paqueteRouter);
 
 
 module.exports = app;

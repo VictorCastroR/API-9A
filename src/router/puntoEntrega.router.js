@@ -96,13 +96,13 @@ router.put("/puntosentrega/:id", async (req, res) => {
 },);
 
 router.delete("/puntosentrega/:id", async (req, res) => {
-    const patch = { active: false };
+    const patch = { activo: false };
     const id = req.params.id;
     const deletePuntoEntrega = await PuntoEntrega.update(patch, { where: { id: id } });
 
-    res.status(204).json({
+    res.status(201).json({
         ok: true,
-        status: 204,
+        status: 201,
         message: "Deleted PuntoEntrega",
     });
 });

@@ -82,7 +82,7 @@ router.delete("/usuarios/:id", async (req, res) => {
  res.status(204).json({
      ok: true,
      status: 204,
-     message: "Updated User",
+     message: "Deleted User",
  })  
 
 
