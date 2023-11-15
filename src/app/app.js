@@ -4,6 +4,7 @@ const morgan = require("morgan")
 const usuarioRouter = require("../router/usuario.router")
 const estadoRouter = require("../router/estado.router")
 const direccionRouter = require("../router/direccion.router")
+const ingredientesRouter = require("../router/ingredientes.router")
 
 const app = express()
 
@@ -19,6 +20,7 @@ app.use(express.json())
 app.use("/api/v1/", usuarioRouter)
 app.use("/api/v1/", estadoRouter);
 app.use("/api/v1/", direccionRouter);
+app.use("/api/v1", ingredientesRouter);
 
 
 module.exports = app;
