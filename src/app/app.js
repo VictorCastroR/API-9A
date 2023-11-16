@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require("morgan")
+const cors = require("cors")
 //Rutas
 const usuarioRouter = require("../router/usuario.router")
 const estadoRouter = require("../router/estado.router")
@@ -8,7 +9,7 @@ const puntoEntregaRouter = require("../router/puntoEntrega.router")
 const paqueteRouter = require("../router/paquete.router")
 
 const app = express()
-
+app.use(cors())
 app.use(morgan("dev"))
 
 app.get('/', (req, res) =>{
