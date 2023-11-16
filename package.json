@@ -4,7 +4,7 @@
   "description": "Api con Node y Express",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index,js",
+    "start": "node src/index.js",
     "dev": "npx nodemon src/index.js"
   },
   "repository": {
