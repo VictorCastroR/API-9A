@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const {faker} = require("@faker-js/faker")
-
+const { verificarToken } = require('../middleware/jwtMiddleware');
 const Pedido = require('../model/pedido.model')
 
 router.get("/pedidos", async (req, res) => {
@@ -26,7 +26,7 @@ router.get("/pedidos/:id", async (req, res) => {
     })
 })
 //PENDIENTE DESDE AQUI PARA ABAJO
-router.post("/pedidos", async (req, res) => {
+router.post("/pedidos", verificarToken, async (req, res) => {
     const dataPedido = req.body;
 
     try {
@@ -62,7 +62,7 @@ router.post("/pedidos", async (req, res) => {
     }
 })
 
-router.put("/usuarios/:id", async (req, res) => {
+router.put("/usuarios/:id", verificarToken, async (req, res) => {
     const id = req.params.id
     const dataUsers = req.body
     const updateUsuario = await Usuario.update({
@@ -85,7 +85,7 @@ router.put("/usuarios/:id", async (req, res) => {
 })
 
 //Eliminacion Logica (Modifica el status a 2, Inactivo)
-router.delete("/usuarios/:id", async (req, res) => {
+router.delete("/usuarios/:id", verificarToken, async (req, res) => {
     const patch = {estado_id: 2}
     const id = req.params.id
     const deleteUsuario = await Usuario.update(patch, {where: {id: id}})

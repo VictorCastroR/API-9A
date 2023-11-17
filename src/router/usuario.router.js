@@ -99,7 +99,7 @@ router.post("/usuarios", verificarToken, async (req, res) => {
     })  
 })
 
-router.put("/usuarios/:id", async (req, res) => {
+router.put("/usuarios/:id",verificarToken, async (req, res) => {
     const id = req.params.id
     const dataUsers = req.body
     const hashedPassword = await bcrypt.hash(dataUsers.contrasena, saltRounds);
@@ -123,7 +123,7 @@ router.put("/usuarios/:id", async (req, res) => {
 })
 
 //Eliminacion Logica (Modifica el status a 2, Inactivo)
-router.delete("/usuarios/:id", async (req, res) => {
+router.delete("/usuarios/:id", verificarToken, async (req, res) => {
     const patch = {estado_id: 2}
     const id = req.params.id
     const deleteUsuario = await Usuario.update(patch, {where: {id: id}})

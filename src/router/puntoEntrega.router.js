@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const {faker} = require("@faker-js/faker");
+const { verificarToken } = require('../middleware/jwtMiddleware');
 
 const PuntoEntrega = require('../model/puntoEntrega.model');
 
@@ -34,7 +35,7 @@ router.get("/puntosentrega/:id", async (req, res) => {
     });
 });
 
-router.post('/puntosentrega', async (req, res) => {
+router.post('/puntosentrega', verificarToken, async (req, res) => {
     try {
         const dataPuntoEntrega =  req.body
         //await PuntoEntrega.sync();
@@ -69,7 +70,7 @@ router.post('/puntosentrega', async (req, res) => {
 
 });
 
-router.put("/puntosentrega/:id", async (req, res) => {
+router.put("/puntosentrega/:id", verificarToken, async (req, res) => {
     const id = req.params.id;
     const dataPuntoEntrega = req.body;
     
@@ -95,7 +96,7 @@ router.put("/puntosentrega/:id", async (req, res) => {
     });
 },);
 
-router.delete("/puntosentrega/:id", async (req, res) => {
+router.delete("/puntosentrega/:id", verificarToken, async (req, res) => {
     const patch = { activo: false };
     const id = req.params.id;
     const deletePuntoEntrega = await PuntoEntrega.update(patch, { where: { id: id } });

@@ -1,6 +1,6 @@
 const router = require("express").Router()
 const {faker} = require("@faker-js/faker")
-
+const { verificarToken } = require('../middleware/jwtMiddleware');
 const Paquete = require('../model/paquete.model')
 
 router.get("/paquetes", async (req, res) => {
@@ -26,7 +26,7 @@ router.get("/paquetes/:id", async (req, res) => {
     })
 })
 
-router.post("/paquetes", async (req, res) => {
+router.post("/paquetes", verificarToken, async (req, res) => {
     const dataPaquetes = req.body 
     await Paquete.sync()
     const createPaquete = await Paquete.create({
@@ -42,7 +42,7 @@ router.post("/paquetes", async (req, res) => {
     })  
 })
 
-router.put("/paquetes/:id", async (req, res) => {
+router.put("/paquetes/:id", verificarToken, async (req, res) => {
     const id = req.params.id
     const dataPaquete = req.body
     const updatePaquete = await Paquete.update({
@@ -64,7 +64,7 @@ router.put("/paquetes/:id", async (req, res) => {
 })
 
 //Eliminacion Logica (Modifica el status a 2, Inactivo)
-router.delete("/paquetes/:id", async (req, res) => {
+router.delete("/paquetes/:id", verificarToken, async (req, res) => {
     const patch = {activo: false}
     const id = req.params.id
     const deletePaquete = await Paquete.update(patch, {where: {id: id}})
