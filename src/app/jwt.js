@@ -9,7 +9,7 @@ function generarToken(usuario) {
   };
 
   const options = {
-    expiresIn: '1h', 
+    expiresIn: '24h', 
   };
 
   return jwt.sign(payload, secretKey, options);
