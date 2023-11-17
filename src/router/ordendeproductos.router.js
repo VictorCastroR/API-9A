@@ -1,18 +1,29 @@
-const express = require('express');
-const sequelize = require('sequelize');
-const Ordendeproductos = require('./models/Ordendeproductos');
+const router = require("express").Router();
+const { faker } = require("@faker-js/faker");
 
-const app = express();
-
+const Ordendeproductos = require("../../models/ordendeproductos");
 // Rutas para el método find()
 
-app.get('/ordendeproductos', (req, res) => {
-  Ordendeproductos.findAll()
-    .then(ordenesdeproductos => res.json(ordenesdeproductos))
-    .catch(err => res.status(400).json(err));
+router.get('/ordendeproductos', async (req, res) => {
+ try{ 
+  const ordendeproductos = await Ordendeproductos.findAll();
+  res.status(200).json({
+    ok:true,
+    status: 200,
+    body: ordendeproductos,
+  });
+} catch (error) {
+  console.error("Error al recuperar una orden de producto:", error);
+  res.status(500).json({
+    ok: false,
+    status: 500,
+    message: "Error al recuperar una orden de producto",
+    error: error.message, // Puedes personalizar esto según tus necesidades
+  });
+}
 });
 
-app.get('/ordendeproductos/:id', (req, res) => {
+router.get('/ordendeproductos/:id', (req, res) => {
   Ordendeproductos.findById(req.params.id)
     .then(ordendeproductos => res.json(ordendeproductos))
     .catch(err => res.status(400).json(err));
@@ -20,7 +31,7 @@ app.get('/ordendeproductos/:id', (req, res) => {
 
 // Rutas para el método create()
 
-app.post('/ordendeproductos', (req, res) => {
+router.post('/ordendeproductos', (req, res) => {
   const ordendeproductos = new Ordendeproductos({
     id_producto: req.body.id_producto,
     costo: req.body.costo,
@@ -36,7 +47,7 @@ app.post('/ordendeproductos', (req, res) => {
 
 // Rutas para el método update()
 
-app.put('/ordendeproductos/:id', (req, res) => {
+router.put('/ordendeproductos/:id', (req, res) => {
   const ordendeproductos = new Ordendeproductos({
     id: req.params.id,
     id_producto: req.body.id_producto,
@@ -53,10 +64,10 @@ app.put('/ordendeproductos/:id', (req, res) => {
 
 // Rutas para el método destroy()
 
-app.delete('/ordendeproductos/:id', (req, res) => {
+router.delete('/ordendeproductos/:id', (req, res) => {
   Ordendeproductos.destroyById(req.params.id)
     .then(() => res.json({ message: 'Orden de producto eliminada correctamente' }))
     .catch(err => res.status(400).json(err));
 });
 
-app.listen(3306, () => console.log('Servidor iniciado en el puerto 3306'));
+module.exports = router

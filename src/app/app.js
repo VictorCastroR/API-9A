@@ -5,6 +5,7 @@ const usuarioRouter = require("../router/usuario.router")
 const estadoRouter = require("../router/estado.router")
 const direccionRouter = require("../router/direccion.router")
 const ingredientesRouter = require("../router/ingredientes.router")
+const ordenRouter = require("../router/ordendeproductos.router")
 
 const app = express()
 
@@ -21,6 +22,8 @@ app.use("/api/v1/", usuarioRouter)
 app.use("/api/v1/", estadoRouter);
 app.use("/api/v1/", direccionRouter);
 app.use("/api/v1", ingredientesRouter);
+app.use("/api/v1", ordenRouter);
+
 
 
 module.exports = app;

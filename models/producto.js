@@ -1,26 +1,41 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class producto extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  producto.init({
-    id: DataTypes.INTEGER,
-    nombre: DataTypes.STRING,
-    precio_actual: DataTypes.DOUBLE,
-    ingredientes_id: DataTypes.INTEGER
-  }, {
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../src/config/sequelize-config");
+
+class Producto extends Model {}
+
+Producto.init(
+  {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+    nombre: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      fileId: "nombre",
+    },
+    precio_actual: {
+      allowNull: false,
+      type: DataTypes.DOUBLE,
+    },
+    ingredientes_id: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Ingredientes", // Nombre de la tabla a la que se hace referencia
+        key: "id", // Clave primaria de la tabla a la que se hace referencia
+      },
+    },
+  },
+  {
     sequelize,
-    modelName: 'producto',
-  });
-  return producto;
-};
+    modelName: "Producto",
+  }
+);
+// Si es necesario, también puedes establecer la relación entre las tablas aquí
+Producto.belongsTo(sequelize.models.Ingredientes, {
+  foreignKey: "ingredientes_id",
+});
+module.exports = Producto;

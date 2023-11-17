@@ -1,28 +1,62 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Ordendeproductos extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  Ordendeproductos.init({
-    id: DataTypes.INTEGER,
-    id_producto: DataTypes.INTEGER,
-    costo: DataTypes.DOUBLE,
-    cantidad: DataTypes.INTEGER,
-    detalles: DataTypes.STRING,
-    notas: DataTypes.STRING
-  }, {
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../src/config/sequelize-config");
+
+class Ordendeproductos extends Model{}
+
+Ordendeproductos.init(
+  {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+    producto_id:{
+      allowNull:false,
+      type: DataTypes.INTEGER,
+      references: {  
+        model:"Producto",
+        key: "id",
+      }
+    },
+    pedido_id:{
+      allowNull:false,
+      type: DataTypes.INTEGER,
+      references: {  
+        model:"Pedidos",
+        key: "id",
+      }
+    },
+    costo:{
+      allowNull:false,
+      type: DataTypes.DOUBLE,
+    },
+    cantidad:{
+      allowNull:false,
+      type: DataTypes.INTEGER,
+    },
+    detalles:{
+      allowNull:false,
+      type: DataTypes.STRING,
+    },
+    notas:{
+      allowNull:false,
+      type: DataTypes.STRING,
+    },
+  },
+  {
     sequelize,
-    modelName: 'Ordendeproductos',
-  });
-  return Ordendeproductos;
-};
+    modelName: "Ordendeproductos",
+  }
+);
+
+Ordendeproductos.associations = function(models){
+  Ordendeproductos.belongsTo (models.Producto, {
+    foreignKey: "id_producto"
+  })
+  Ordendeproductos.belongsTo (models.Pedido, {
+    foreignKey: "id_pedido"
+  })
+}
+
+module.exports = Ordendeproductos
