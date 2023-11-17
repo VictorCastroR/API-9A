@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const {faker} = require("@faker-js/faker")
+const { verificarToken } = require('../middleware/jwtMiddleware');
 
 const Direccion = require('../model/direccion.model')
 
@@ -33,7 +34,7 @@ router.get("/direcciones/:usuarioId", async (req, res) => {
 });
 
 // Ruta para agregar una dirección a un usuario específico
-router.post("/direcciones/:usuarioId", async (req, res) => {
+router.post("/direcciones/:usuarioId",verificarToken, async (req, res) => {
     const usuarioId = req.params.usuarioId;
     const dataDireccion = req.body;
     //await Direccion.sync()
@@ -76,7 +77,7 @@ router.post("/direcciones/:usuarioId", async (req, res) => {
 
 
 // Ruta para actualizar una dirección de un usuario específico
-router.put("/direcciones/:direccionId/:usuarioId", async (req, res) => {
+router.put("/direcciones/:direccionId/:usuarioId", verificarToken, async (req, res) => {
     const direccionId = req.params.direccionId;
     
     const usuarioId = req.params.usuarioId;
@@ -95,8 +96,6 @@ router.put("/direcciones/:direccionId/:usuarioId", async (req, res) => {
         }
 
         if (direccion.usuario_id.toString() !== usuarioId) {
-            console.log("Tu usuario es: ",usuarioId)
-            console.log("Tu usuario tiene que ser: ",direccion.usuario_id)
             return res.status(403).json({
                 ok: false,
                 status: 403,
