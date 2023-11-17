@@ -73,8 +73,15 @@ router.get("/usuarios/:id", async (req, res) => {
     })
 })
 
-router.post("/usuarios", verificarToken, async (req, res) => {
+router.post("/usuarios", async (req, res) => {
     const dataUsers = req.body 
+        // Validación de campos requeridos
+        if (!dataUsers.nombre || !dataUsers.username || !dataUsers.correo_electronico || !dataUsers.contrasena) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: "Todos los campos son requeridos"
+            });
+        }
     const hashedPassword = await bcrypt.hash(dataUsers.contrasena, saltRounds);
     //await Usuario.sync()
     const createUsuario = await Usuario.create({
