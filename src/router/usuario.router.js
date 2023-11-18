@@ -5,7 +5,7 @@ const { verificarToken } = require('../middleware/jwtMiddleware');
 const bcrypt = require('bcrypt');
 const saltRounds = 3;
 
-const Usuario = require('../models/usuario.model')
+const Usuario = require('../model/usuario.model')
 
 router.post('/login', async (req, res) => {
     try {
@@ -84,7 +84,6 @@ router.post("/usuarios", async (req, res) => {
         }
     const hashedPassword = await bcrypt.hash(dataUsers.contrasena, saltRounds);
     //await Usuario.sync()
-    await Usuario.sync({ force: false });
     const createUsuario = await Usuario.create({
       //Este codigo ayuda a crear campos predeterminados, 
         /* nombre: faker.person.fullName(),
@@ -96,7 +95,6 @@ router.post("/usuarios", async (req, res) => {
         username:  dataUsers.username,
         correo_electronico:  dataUsers.correo_electronico,
         contrasena:  hashedPassword,
-        imagen: dataUsers.imagen
 
         });
         res.status(201).json({

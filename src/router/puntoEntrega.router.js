@@ -2,7 +2,7 @@ const router = require("express").Router();
 const {faker} = require("@faker-js/faker");
 const { verificarToken } = require('../middleware/jwtMiddleware');
 
-const PuntoEntrega = require('../models/puntoEntrega.model');
+const PuntoEntrega = require('../model/puntoEntrega.model');
 
 // Ruta para obtener todos los puntos de entrega
 router.get('/puntosentrega', async (req, res) => {

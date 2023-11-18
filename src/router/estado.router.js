@@ -1,6 +1,6 @@
 const router = require("express").Router()
 
-const Estado = require('../models/estado.model')
+const Estado = require('../model/estado.model')
 router.get("/estados", async (req, res) => {
     const estados = await Estado.findAll()
     res.status(200).json({

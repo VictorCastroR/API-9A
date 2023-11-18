@@ -2,7 +2,7 @@ const router = require("express").Router()
 const {faker} = require("@faker-js/faker")
 const { verificarToken } = require('../middleware/jwtMiddleware');
 
-const Direccion = require('../models/direccion.model')
+const Direccion = require('../model/direccion.model')
 
 router.get("/direcciones/:usuarioId", async (req, res) => {
     const usuarioId = req.params.usuarioId;

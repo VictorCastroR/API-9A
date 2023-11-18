@@ -41,17 +41,11 @@ const Estado = require('./estado.model');
             }
         },
         estado_id: {
-            allowNull: false,
+            allowNull: true,
             type: DataTypes.INTEGER,
             field: 'estado_id',
             defaultValue: 3
         },
-        imagen: {
-            allowNull: true,
-            type: DataTypes.TEXT,
-            field: 'imagen'
-        }
-        
     }, {
         sequelize,
         modelName: "Usuario"

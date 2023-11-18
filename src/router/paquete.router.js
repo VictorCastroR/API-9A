@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const {faker} = require("@faker-js/faker")
 const { verificarToken } = require('../middleware/jwtMiddleware');
-const Paquete = require('../models/paquete.model')
+const Paquete = require('../model/paquete.model')
 
 router.get("/paquetes", async (req, res) => {
     const paquetes = await Paquete.findAll()
