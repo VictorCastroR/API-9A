@@ -95,6 +95,7 @@ router.post("/usuarios", async (req, res) => {
         username:  dataUsers.username,
         correo_electronico:  dataUsers.correo_electronico,
         contrasena:  hashedPassword,
+        imagen: dataUsers.imagen
 
         });
         res.status(201).json({
@@ -115,6 +116,7 @@ router.put("/usuarios/:id",verificarToken, async (req, res) => {
           username:  dataUsers.username,
           correo_electronico:  dataUsers.correo_electronico,
           contrasena:  hashedPassword,
+          imagen: dataUsers.imagen
           }, {
             where: {
                 id:id
