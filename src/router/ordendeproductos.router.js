@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { faker } = require("@faker-js/faker");
 
-const Ordendeproductos = require("../../models/ordendeproductos");
+const Ordendeproductos = require("../model/ordendeproductos");
 // Rutas para el método find()
 
 router.get('/ordendeproductos', async (req, res) => {

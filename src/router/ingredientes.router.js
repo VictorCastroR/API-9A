@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { faker } = require("@faker-js/faker");
 
-const Ingredientes = require("../../models/ingredientes");
+const Ingredientes = require("../model/ingredientes");
 
 router.get("/ingredientes", async (req, res) => {
     try {
