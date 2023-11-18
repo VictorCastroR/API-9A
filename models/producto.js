@@ -16,7 +16,12 @@ Producto.init(
       type: DataTypes.STRING,
       fileId: "nombre",
     },
-    precio_actual: {
+    descripcion: {
+      allowNull: false,
+      type: DataTypes.STRING,
+      fileId: "descripcion",
+    },
+    precio: {
       allowNull: false,
       type: DataTypes.DOUBLE,
     },

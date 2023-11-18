@@ -34,7 +34,8 @@ router.get("/ingredientes", async (req, res) => {
       res.status(201).json({
         ok: true,
         status: 201,
-        message: "Ingredientes creado correctamente",
+        message:
+         "Ingredientes creado correctamente",
         body: createIngredients,
       });
     } catch (error) {

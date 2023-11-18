@@ -23,51 +23,101 @@ router.get('/ordendeproductos', async (req, res) => {
 }
 });
 
-router.get('/ordendeproductos/:id', (req, res) => {
-  Ordendeproductos.findById(req.params.id)
-    .then(ordendeproductos => res.json(ordendeproductos))
-    .catch(err => res.status(400).json(err));
-});
+router.post("/ordendeproductos", async (req, res) => {
+  try{
+    const dataOrdendeproductos = req.body;
 
-// Rutas para el método create()
-
-router.post('/ordendeproductos', (req, res) => {
-  const ordendeproductos = new Ordendeproductos({
-    id_producto: req.body.id_producto,
-    costo: req.body.costo,
-    cantidad: req.body.cantidad,
-    detalles: req.body.detalles,
-    notas: req.body.notas,
+    const createOrden = await Ordendeproductos.create({
+      producto_id: dataOrdendeproductos.producto_id,
+      pedido_id : dataOrdendeproductos.pedido_id,
+      costo: dataOrdendeproductos.costo,
+      cantidad: dataOrdendeproductos.cantidad,
+      detalles: dataOrdendeproductos.detalles,
+      notas: dataOrdendeproductos.notas,
+    })
+    res.status(201).json({
+      ok:true,
+      status:201,
+      message: "Orden creada correctamente",
+      body: createOrden,
+    });
+} catch(error){
+  console.error("Error al ordenar:",error);
+  res.status(500).json({
+    ok:false,
+    status:500,
+    message: "Error al ordenar",
+    error: error.message,
   });
-
-  ordendeproductos.save()
-    .then(ordendeproductos => res.json(ordendeproductos))
-    .catch(err => res.status(400).json(err));
+}
 });
 
+router.delete("/ordendeproductos", async (req, res) => {
+  try{
+    const{id} = req.params;
+
+    const existingOrden= await Ordendeproductos.findByPk(id);
+
+    if (!existingOrden){
+      return res.status(404).json({
+        ok: false,
+        status: 404,
+        message: "Orden no encontrada",
+      });
+    }
+    await Ordendeproductos.destroy({
+      where: {
+        id:id,
+      },
+    });
+    res.status(200).json({
+      ok:true,
+      status:200,
+      body: Ordendeproductos,
+    });
+  }catch (error) {
+    console.error("Error al eliminar la orden")
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: "Error al eliminar la orden",
+      error: error.message,
+    });
+  }
+});
 // Rutas para el método update()
 
-router.put('/ordendeproductos/:id', (req, res) => {
-  const ordendeproductos = new Ordendeproductos({
-    id: req.params.id,
-    id_producto: req.body.id_producto,
-    costo: req.body.costo,
-    cantidad: req.body.cantidad,
-    detalles: req.body.detalles,
-    notas: req.body.notas,
+router.get('/ordendeproductos/:id', async (req, res) => {
+  try{
+    const { id } = req.params;
+    const existingOrdendeproducto = await Ordendeproductos.findByPk(id);
+    
+    if (!existingOrdendeproducto){
+      return res.status(404).json({
+        ok:false,
+        status: 404,
+        message: "Orden no encontrado",
+      });
+    }
+  const ordendeproductos = await Ordendeproductos.findOne({
+    where: {
+      id:id,
+    },
   });
-
-  ordendeproductos.update()
-    .then(ordendeproductos => res.json(ordendeproductos))
-    .catch(err => res.status(400).json(err));
-});
-
-// Rutas para el método destroy()
-
-router.delete('/ordendeproductos/:id', (req, res) => {
-  Ordendeproductos.destroyById(req.params.id)
-    .then(() => res.json({ message: 'Orden de producto eliminada correctamente' }))
-    .catch(err => res.status(400).json(err));
+  res.status(200).json({
+    ok: true,
+    status: 200,
+    body: ordendeproductos,
+  });
+}catch(error){
+  console.error("Error al encontrar orden de producto:", error);
+  res.status(500).jason({
+    ok:false,
+    status: 500,
+    message: "Error al encontrar orden de productos",
+    error: error.message,
+  });
+}
 });
 
 module.exports = router
