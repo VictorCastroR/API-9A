@@ -25,7 +25,7 @@ router.get("/producto", async (req, res) => {
     router.post("/producto", async (req, res) =>{
         try{
             const dataProducto = req.body;
-
+            Producto.sync()
             const createProducto = await Producto.create({
                 nombre: dataProducto.nombre,
                 descripcion: dataProducto.descripcion,

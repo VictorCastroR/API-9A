@@ -25,7 +25,7 @@ router.get("/ingredientes", async (req, res) => {
   router.post("/ingredientes", async (req, res) => {
     try {
       const dataIngredients = req.body;
-  
+
       const createIngredients = await Ingredientes.create({
         nombre: dataIngredients.nombre,
         cantidad: dataIngredients.cantidad,

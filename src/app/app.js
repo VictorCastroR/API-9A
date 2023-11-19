@@ -10,6 +10,7 @@ const ordendeproductosRouter = require("../router/ordendeproductos.router")
 const puntoEntregaRouter = require("../router/puntoEntrega.router")
 const paqueteRouter = require("../router/paquete.router")
 const productoRouter =require("../router/producto.router")
+const direccionEntrega = require("../router/direccionEntrega.router")
 
 const app = express()
 app.use(cors())
@@ -31,6 +32,7 @@ app.use("/api/v1", ordendeproductosRouter);
 app.use("/api/v1/", productoRouter);
 app.use("/api/v1/", puntoEntregaRouter);
 app.use("/api/v1/", paqueteRouter);
+app.use("/api/v1", direccionEntrega)
 
 
 module.exports = app;
