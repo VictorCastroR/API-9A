@@ -1,6 +1,7 @@
-const { Model, DataTypes} = require('sequelize')
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize-config');
 const Usuario = require('./usuario.model');
+const DireccionEntrega = require('./direccionEntrega.model');
 
 class Pedido extends Model {}
 
@@ -11,36 +12,44 @@ Pedido.init({
         primaryKey: true,
         type: DataTypes.INTEGER
     },
-    costolTotal: {
+    costoTotal: {
         allowNull: false,
-        type: DataTypes.DATE,
-        field: 'costolTotal',
+        type: DataTypes.DECIMAL,  
+        field: 'costoTotal',  
     },
     descuento: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.DECIMAL,
-        field: 'decuento',
+        field: 'descuento', 
     },
     isCompleted: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
-        field: 'costolTotal',
+        field: 'isCompleted',
         defaultValue: false
     },
     usuario_id: {
         allowNull: false,
         type: DataTypes.INTEGER,
         field: 'usuario_id',
-    } 
+    },
+    direccionEntrega_id: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+        references: {
+          model: DireccionEntrega,
+          key: "id",
+        }
+    },
 },
- {
+{
     sequelize,
     modelName: "Pedido"
-})
+});
 
 Pedido.belongsTo(Usuario, {
     foreignKey: 'usuario_id',
     targetKey: 'id', 
-  });
+});
 
-module.exports = Pedido
+module.exports = Pedido;

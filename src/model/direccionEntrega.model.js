@@ -1,5 +1,9 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize-config');
+const Direccion = require('./direccion.model');
+const PuntoEntrega = require('./puntoEntrega.model');
+const Usuario = require('./usuario.model');
+
 class DireccionEntrega extends Model {}
 
 DireccionEntrega.init(
@@ -14,7 +18,7 @@ DireccionEntrega.init(
       allowNull: true,
       type: DataTypes.INTEGER,
       references: {  
-        model:"PuntoEntrega",
+        model: PuntoEntrega,
         key: "id",
       }
     },
@@ -22,19 +26,24 @@ DireccionEntrega.init(
       allowNull: true,
       type: DataTypes.INTEGER,
       references: {  
-        model:"Direccion",
+        model: Direccion,
         key: "id",
       }
-
     },
-    pedido_id: {
+    usuario_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
       references: {  
-        model:"Pedido",
+        model: Usuario,
         key: "id",
       }
     },
+    status: {
+      allowNull: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
   },
   {
     sequelize,
@@ -43,20 +52,21 @@ DireccionEntrega.init(
   }
 );
 
-DireccionEntrega.associations = function(model){
-  DireccionEntrega.belongsTo(model.Direccion, {
-    foreignKey: "direccion_id"
-  })
+DireccionEntrega.associations = function(models) {
+  DireccionEntrega.belongsTo(models.Direccion, {
+    foreignKey: "direccion_id",
+    as: "direccion", 
+  });
 
-  DireccionEntrega.belongsTo(model.PuntoEntrega, {
-    foreignKey: "pe_id"
-  })
+  DireccionEntrega.belongsTo(models.PuntoEntrega, {
+    foreignKey: "pe_id",
+    as: "puntoEntrega", 
+  });
 
-  DireccionEntrega.belongsTo(model.Pedido, {
-    foreignKey: "pedido_id"
-  })
+  DireccionEntrega.belongsTo(models.Usuario, {
+    foreignKey: "usuario_id",
+    as: "usuario", 
+  });
 }
-
-
 
 module.exports = DireccionEntrega;

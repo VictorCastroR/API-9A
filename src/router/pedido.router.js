@@ -1,16 +1,22 @@
-const router = require("express").Router()
-const {faker} = require("@faker-js/faker")
+const router = require("express").Router();
+const sequelize = require('../config/sequelize-config');
 const { verificarToken } = require('../middleware/jwtMiddleware');
-const Pedido = require('../model/pedido.model')
+const Pedido = require('../model/pedido.model'); 
+const Producto = require('../model/producto.model');
+const DireccionEntrega = require('../model/direccionEntrega.model');
+const PuntoEntrega = require('../model/puntoEntrega.model');
+const Direccion = require('../model/direccion.model');
 
+
+const PedidoProducto = require('../model/pedidoproducto.model');
 router.get("/pedidos", async (req, res) => {
     const pedidos = await Pedido.findAll()
     res.status(200).json({
         ok: true,
         status: 200,
         body: pedidos
-    })
-})
+    });
+});
 
 router.get("/pedidos/:id", async (req, res) => {
     const id = req.params.id
@@ -18,85 +24,79 @@ router.get("/pedidos/:id", async (req, res) => {
         where: {
             id: id
         }
-    })
+    });
     res.status(200).json({
         ok: true,
         status: 200,
         body: pedido
-    })
-})
-//PENDIENTE DESDE AQUI PARA ABAJO
-router.post("/pedidos", verificarToken, async (req, res) => {
-    const dataPedido = req.body;
+    });
+});
 
-    try {
-        // Buscar todas las ordenes de productos asociadas al pedido
-        const ordenesProducto = await OrdenDeProductos.findAll({
-            attributes: ['costo', 'cantidad'],
-            where: {
-                id: dataPedido.id_pedido, // Asegúrate de ajustar esto según tu estructura de datos
-            }
-        });
-
-        // Calcular el costo total sumando el producto de costo y cantidad de todas las ordenes
-        const costoTotal = ordenesProducto.reduce((total, orden) => {
-            return total + (orden.costo * orden.cantidad);
-        }, 0);
-
-        // Crear el pedido con el costo total calculado
-        const createPedido = await Pedido.create({
-            costoTotal: costoTotal,
-            descuento: dataPedido.descuento,
-            usuario_id: dataPedido.usuario_id
-        });
-
-        res.status(201).json({
-            ok: true,
-            status: 201,
-            message: "Created Pedido",
-            body: createPedido
-        });
-    } catch (error) {
-        console.error('Error al crear un pedido:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-})
-
-router.put("/usuarios/:id", verificarToken, async (req, res) => {
-    const id = req.params.id
-    const dataUsers = req.body
-    const updateUsuario = await Usuario.update({
-          nombre: dataUsers.nombre,
-          username:  dataUsers.username,
-          correo_electronico:  dataUsers.correo_electronico,
-          contrasena:  dataUsers.contrasena,
-          }, {
-            where: {
-                id:id
-            }
-        });
-          res.status(201).json({
-              ok: true,
-              status: 200,
-              message: "Updated User",
-              body: updateUsuario
+router.post('/pedidos', async (req, res) => {
+  const t = await sequelize.transaction();
   
-      })   
-})
+  try {
+      const { descuento = 0, usuario_id, direccionEntrega_id, productos } = req.body;
+      await Pedido.sync();
 
-//Eliminacion Logica (Modifica el status a 2, Inactivo)
-router.delete("/usuarios/:id", verificarToken, async (req, res) => {
-    const patch = {estado_id: 2}
-    const id = req.params.id
-    const deleteUsuario = await Usuario.update(patch, {where: {id: id}})
+      // Calcular costo total y aplicar descuento
+      let costoTotal = 0;
+      let descuentoTotal = descuento || 0;
 
- res.status(204).json({
-     ok: true,
-     status: 204,
-     message: "Deleted User",
- })  
+      for (const { producto_id, cantidad } of productos) {
+        const producto = await Producto.findByPk(producto_id);
+
+        if (producto) {
+          costoTotal += producto.precio * cantidad;
+        }
+      }
+    
+      // Aplicar descuento
+      costoTotal -= descuentoTotal;
+
+      // Crear el pedido
+      const nuevoPedido = await Pedido.create({
+          costoTotal: costoTotal,
+          descuento: descuento,
+          isCompleted: false,
+          usuario_id: usuario_id,
+          direccionEntrega_id: direccionEntrega_id,
+      }, { transaction: t });
+
+      await PedidoProducto.sync();
+      
+      // Agregar los productos al pedido
+      for (const { producto_id, cantidad } of productos) {
+          await PedidoProducto.create({
+              pedido_id: nuevoPedido.id,
+              producto_id: producto_id,
+              cantidad: cantidad,
+          }, { transaction: t });
+      }
+
+      // Commit la transacción
+      await t.commit();
+
+      res.status(201).json({
+          ok: true,
+          status: 201,
+          message: 'Pedido creado correctamente',
+          body: nuevoPedido,
+      });
+  } catch (error) {
+      // Rollback en caso de error
+      await t.rollback();
+
+      console.error('Error al crear un nuevo pedido:', error);
+      res.status(500).json({
+          ok: false,
+          status: 500,
+          message: 'Error al crear un nuevo pedido',
+          error: error.message,
+      });
+  }
+});
 
 
-})
+  module.exports = router;
 
-module.exports = router

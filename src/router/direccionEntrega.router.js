@@ -3,11 +3,15 @@ const { verificarToken } = require('../middleware/jwtMiddleware');
 const DireccionEntrega = require('../model/direccionEntrega.model');
 const PuntoEntrega = require('../model/puntoEntrega.model');
 const Direccion = require('../model/direccion.model');
-const Pedido = require('../model/pedido.model');
+const Usuario = require('../model/usuario.model');
+
 
 router.get('/direccionesentrega', async (req, res) => {
   try {
-    const direccionesEntrega = await DireccionEntrega.findAll();
+    const direccionesEntrega = await DireccionEntrega.findAll({
+      include: [PuntoEntrega, Direccion, Usuario],
+    });
+
     res.status(200).json({
       ok: true,
       status: 200,
@@ -24,7 +28,17 @@ router.get('/direccionesentrega/:id', async (req, res) => {
   try {
     const direccionEntrega = await DireccionEntrega.findOne({
       where: { id: id },
+      include: [PuntoEntrega, Direccion, Usuario],
     });
+
+    if (!direccionEntrega) {
+      return res.status(404).json({
+        ok: false,
+        status: 404,
+        message: 'Dirección de entrega no encontrada',
+      });
+    }
+
     res.status(200).json({
       ok: true,
       status: 200,
@@ -36,16 +50,40 @@ router.get('/direccionesentrega/:id', async (req, res) => {
   }
 });
 
-
 router.post('/direccionesentrega', async (req, res) => {
   try {
-    const dataDireccionEntrega = req.body;
-    await DireccionEntrega.sync()
+    const { pe_id, direccion_id, usuario_id} = req.body;
+
+    // Validar que solo se mande un id de dirección
+    if ((pe_id && direccion_id) || (!pe_id && !direccion_id)) {
+      return res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Debes proporcionar solo un id de dirección (Punto de entrega o direccion propia)',
+      });
+    }
+    await DireccionEntrega.sync();
+  // Verificar si el usuario ya tiene una dirección de entrega activa
+  const direccionActiva = await DireccionEntrega.findOne({
+    where: {
+      usuario_id: usuario_id,
+      status: true,
+    },
+  });
+
+  if (direccionActiva) {
+    return res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Ya tienes una dirección de entrega activa. Debes desactivarla antes de agregar una nueva',
+    });
+  }
+    
 
     const createDireccionEntrega = await DireccionEntrega.create({
-      pe_id: dataDireccionEntrega.pe_id,
-      direccion_id: dataDireccionEntrega.direccion_id,
-      pedido_id: dataDireccionEntrega.pedido_id,
+      pe_id: pe_id,
+      direccion_id: direccion_id,
+      usuario_id: usuario_id
     });
 
     res.status(201).json({
@@ -59,5 +97,6 @@ router.post('/direccionesentrega', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 
 module.exports = router;

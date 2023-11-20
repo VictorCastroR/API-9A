@@ -1,5 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/sequelize-config");
+const Pedido = require("./pedido.model"); // Asegúrate de tener el nombre correcto del archivo
+const Ingrediente = require("./ingrediente.model"); // Asegúrate de tener el nombre correcto del archivo
 
 class Producto extends Model {}
 
@@ -14,12 +16,10 @@ Producto.init(
     nombre: {
       allowNull: false,
       type: DataTypes.STRING,
-      fileId: "nombre",
     },
     descripcion: {
       allowNull: false,
       type: DataTypes.STRING,
-      fileId: "descripcion",
     },
     precio: {
       allowNull: false,
@@ -39,8 +39,17 @@ Producto.init(
     modelName: "Producto",
   }
 );
-// Si es necesario, también puedes establecer la relación entre las tablas aquí
-Producto.belongsTo(sequelize.models.Ingredientes, {
+
+// Relación muchos a muchos con Pedido
+Producto.belongsToMany(Pedido, {
+  through: "PedidoProducto",
+  foreignKey: "producto_id",
+  otherKey: "pedido_id",
+});
+
+// Relación uno a muchos con Ingrediente
+Producto.belongsTo(Ingrediente, {
   foreignKey: "ingredientes_id",
 });
+
 module.exports = Producto;
