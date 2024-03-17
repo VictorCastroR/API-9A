@@ -3,6 +3,9 @@ const { Model, DataTypes} = require('sequelize')
 
 const Address = require('./address.model');
 const Role = require('./role.model');
+const Profession = require('./profession.model');
+
+
 class User extends Model {}
 
 User.init({
@@ -68,6 +71,7 @@ User.init({
 //Indicar relaciones
 User.hasOne(Address)
 User.belongsTo(Role)
+User.belongsTo(Profession)
 
 
 module.exports = User

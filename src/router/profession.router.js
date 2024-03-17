@@ -25,7 +25,7 @@ router.post("/profession/crearTabla", async (req, res) => {
 });
 
 // Ruta para crear una nueva profesión
-router.post('/profession', verifyToken.verifyToken, async (req, res) => {
+router.post('/profession',  async (req, res) => {
     try {
         const { nombre, rubro, precio } = req.body;
 

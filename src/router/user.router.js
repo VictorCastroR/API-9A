@@ -4,6 +4,7 @@ const jwtMiddleware = require('../middleware/jwtMiddleware');
 const bcrypt = require('bcryptjs');
 const User = require("../model/user.model")
 const Role = require("../model/role.model")
+const Profession = require("../model/profession.model");
 
 
 router.post('/user/login', async (req, res) => {
@@ -113,7 +114,7 @@ router.get('/user/staff', async (req, res) => {
 router.post('/user', async (req, res) => {
     try {
         // Obtener los datos del cuerpo de la solicitud
-        const { fullName, email, password, phoneNumber, ine, criminalRecord, photo, roleId } = req.body;
+        const { fullName, email, password, phoneNumber, ine, criminalRecord, photo, roleId, professionId } = req.body;
 
         // Verificar si el correo electrónico ya está en uso
         const existingEmailUser = await User.findOne({ where: { email } });
@@ -132,6 +133,7 @@ router.post('/user', async (req, res) => {
 
         // Verificar si roleId se proporciona
         let roleIdToUse = null;
+        let professionIdValidated = null
 
         if (roleId && roleId >= 0) {
             // Si se proporciona roleId, verificar si existe en la base de datos de roles
@@ -149,6 +151,19 @@ router.post('/user', async (req, res) => {
             roleIdToUse = defaultRole.id;
         }
 
+        if(professionId >= 0){
+            // Si se proporciona professionId, verificar si existe en la base de datos de professions
+            const professionExists = await Profession.findByPk(professionId);
+            if(!professionExists){
+                return res.status(404).json({ message: 'La profesion proporcionada no existe' });
+            }
+            professionIdValidated = professionId
+        }else{
+            professionIdValidated = null
+        }
+
+
+
         // Crear el nuevo usuario con isActive por defecto como true y roleId asignado correctamente
         const newUser = await User.create({
             fullName,
@@ -158,7 +173,8 @@ router.post('/user', async (req, res) => {
             ine,
             criminalRecord,
             photo,
-            RoleId: roleIdToUse, // Asignar roleId por defecto si no se proporciona
+            RoleId: roleIdToUse,
+            ProfessionId: professionIdValidated,
             isActive: true
         });
 
@@ -171,7 +187,7 @@ router.post('/user', async (req, res) => {
 router.put('/user/:id', async (req, res) => {
     try {
         const userId = req.params.id;
-        const { fullName, email, password, phoneNumber, ine, criminalRecord, photo, roleId } = req.body;
+        const { fullName, email, password, phoneNumber, ine, criminalRecord, photo, roleId, professionId } = req.body;
 
         // Buscar el usuario por su ID
         let user = await User.findByPk(userId);
@@ -194,7 +210,7 @@ router.put('/user/:id', async (req, res) => {
         user.criminalRecord = criminalRecord;
         user.photo = photo;
         user.roleId = roleId;
-
+        user.professionId = professionId;
         // Guardar los cambios en la base de datos
         await user.save();
 
