@@ -27,7 +27,7 @@ router.post("/profession/crearTabla", async (req, res) => {
 // Ruta para crear una nueva profesión
 router.post('/profession',  async (req, res) => {
     try {
-        const { nombre, rubro, precioMin, precioMax } = req.body;
+        const { nombre, rubro, precioMin, precioMax, icono } = req.body;
 
         // Crear la nueva profesión
         const newProfession = await Profession.create({
@@ -35,6 +35,7 @@ router.post('/profession',  async (req, res) => {
             rubro,
             precioMin,
             precioMax,
+            icono,
             isActive: true
         });
 

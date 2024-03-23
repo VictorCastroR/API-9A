@@ -18,6 +18,10 @@ Profession.init({
         allowNull: false,
         type: DataTypes.STRING
     },
+    icono: {
+        allowNull: false,
+        type: DataTypes.TEXT
+    },
     precioMin: {
         allowNull: false,
         type: DataTypes.DECIMAL
