@@ -18,10 +18,14 @@ Profession.init({
         allowNull: false,
         type: DataTypes.STRING
     },
-    precio: {
+    precioMin: {
         allowNull: false,
         type: DataTypes.DECIMAL
     },
+    precioMax: {
+    allowNull: false,
+        type: DataTypes.DECIMAL
+},
     isActive: {
         allowNull: false,
         type: DataTypes.BOOLEAN

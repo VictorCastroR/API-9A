@@ -6,7 +6,7 @@ const roleRouter = require("../router/role.router")
 const userRouter = require("../router/user.router")
 const addressRouter = require("../router/address.router")
 const professionRouter = require("../router/profession.router")
-
+const contractRouter = require("../router/contract.router")
 
 
 //Middlewares
@@ -28,6 +28,7 @@ app.use(urlBase, roleRouter)
 app.use(urlBase, userRouter)
 app.use(urlBase, addressRouter)
 app.use(urlBase, professionRouter)
+app.use(urlBase, contractRouter)
 
 
 //Exportacion del modulo

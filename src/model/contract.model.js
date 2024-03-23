@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize-config');
 const Profession = require('./profession.model');
+const User = require('./user.model');
 
 class Contract extends Model {}
 
@@ -11,28 +12,79 @@ Contract.init({
         primaryKey: true,
         type: DataTypes.INTEGER
     },
-    fechaServicio: {
+    consumerId: {
         allowNull: false,
-        type: DataTypes.DATE // Fecha en la que se realizará el servicio
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
-    horaServicio: {
-        allowNull: false,
-        type: DataTypes.TIME // Hora en la que se realizará el servicio
+    workerId: {
+        allowNull: true,
+        type: DataTypes.INTEGER,
+        references: {
+            model: User,
+            key: 'id'
+        }
     },
-    materialesProporcionados: {
+    professionId: {
         allowNull: false,
-        type: DataTypes.BOOLEAN // Indica si el cliente proporcionará los materiales (true/false)
+        type: DataTypes.INTEGER,
+        references: {
+            model: Profession,
+            key: 'id'
+        }
     },
-    cicloVida: {
+    specifications: {
         allowNull: false,
-        type: DataTypes.ENUM('Pendiente', 'En Proceso', 'Terminado', 'Cancelado') // Estado del contrato
+        type: DataTypes.TEXT
+    },
+    startDate: {
+        allowNull: false,
+        type: DataTypes.DATE
+    },
+    status: {
+        allowNull: false,
+        type: DataTypes.ENUM('Pendiente', 'Aceptado', 'Rechazado', 'En Proceso', 'Terminado', 'Cancelado')
+    },
+    beforeImage: {
+        allowNull: true,
+        type: DataTypes.STRING
+    },
+    duringImage: {
+        allowNull: true,
+        type: DataTypes.STRING
+    },
+    afterImage: {
+        allowNull: true,
+        type: DataTypes.STRING
+    },
+    workerRating: {
+        allowNull: true,
+        type: DataTypes.INTEGER
+    },
+    workerComment: {
+        allowNull: true,
+        type: DataTypes.TEXT
+    },
+
+    consumerRating: {
+        allowNull: true,
+        type: DataTypes.INTEGER
+    },
+    consumerComment: {
+        allowNull: true,
+        type: DataTypes.TEXT
     }
 }, {
     sequelize,
     modelName: 'Contract'
 });
 
-// Definir la relación entre Contrato y Profesión
-Contract.belongsTo(Profession);
+// Definir las relaciones entre Contrato y Usuario
+Contract.belongsTo(User, { foreignKey: 'consumerId', as: 'consumer' });
+Contract.belongsTo(User, { foreignKey: 'workerId', as: 'worker' });
+Contract.belongsTo(Profession, { foreignKey: 'professionId', as: 'profession' });
 
 module.exports = Contract;

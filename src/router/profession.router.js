@@ -27,13 +27,14 @@ router.post("/profession/crearTabla", async (req, res) => {
 // Ruta para crear una nueva profesión
 router.post('/profession',  async (req, res) => {
     try {
-        const { nombre, rubro, precio } = req.body;
+        const { nombre, rubro, precioMin, precioMax } = req.body;
 
         // Crear la nueva profesión
         const newProfession = await Profession.create({
             nombre,
             rubro,
-            precio,
+            precioMin,
+            precioMax,
             isActive: true
         });
 
@@ -102,6 +103,7 @@ router.delete('/profession/:id', verifyToken.verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar la profesión' });
     }
 });
+
 
 
 module.exports = router;
