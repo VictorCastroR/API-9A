@@ -50,15 +50,15 @@ Contract.init({
     },
     beforeImage: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     duringImage: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     afterImage: {
         allowNull: true,
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     workerRating: {
         allowNull: true,

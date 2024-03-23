@@ -31,4 +31,16 @@ PARA CREAR LAS TABLAS SE DEBE USAR LOS METODOS POST DE CADA RUTA, EN EL SIGUIENT
    "UserId": 1
    }
 5. http://localhost:3301/api/v1/contract/crearTabla
-   5.1 Json para crear contracts 
+   5.1 Json para crear contracts
+   {
+   "consumerId": 1,
+   "professionId": 1,
+   "specifications": "Especificaciones del trabajo a realizar",
+   "startDate": "2024-05-15"
+   }
+6. 
+   5.2 JSON para agregar calificacion Consumer a Trabajador
+   {
+     "comment": "El trabajador realizó un excelente trabajo. Muy profesional y puntual.",
+      "rating": 5
+   }
