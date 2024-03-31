@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize-config');
+
 const Profession = require('./profession.model');
 const User = require('./user.model');
 
@@ -86,5 +87,6 @@ Contract.init({
 Contract.belongsTo(User, { foreignKey: 'consumerId', as: 'consumer' });
 Contract.belongsTo(User, { foreignKey: 'workerId', as: 'worker' });
 Contract.belongsTo(Profession, { foreignKey: 'professionId', as: 'profession' });
+
 
 module.exports = Contract;
