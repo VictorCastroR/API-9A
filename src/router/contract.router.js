@@ -178,7 +178,62 @@ router.get('/contracts', jwtMiddleware.verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los contratos.' });
     }
 });
+router.get('/contracts/:status', jwtMiddleware.verifyToken, async (req, res) => {
+    try {
+        const status = req.params.status;
 
+        // Verificar que el estado proporcionado sea válido
+        const validStatuses = ['Pendiente', 'Aceptado', 'Rechazado', 'En Proceso', 'Terminado', 'Cancelado'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ message: 'Estado de contrato no válido.' });
+        }
+
+        // Obtener todos los contratos con el estado proporcionado
+        const contracts = await Contract.findAll({ where: { status: status } });
+
+        // Array para almacenar los contratos con nombres de consumidores y trabajadores (si existe)
+        const contractsWithNames = [];
+
+        // Iterar sobre cada contrato para obtener los nombres del consumidor y trabajador (si existe)
+        for (const contract of contracts) {
+            // Obtener el nombre del consumidor
+            const consumer = await User.findByPk(contract.consumerId);
+            if (!consumer) {
+                return res.status(404).json({ message: 'Consumidor no encontrado.' });
+            }
+
+            let workerName = null;
+            // Si el trabajador está asignado al contrato, obtener su nombre
+            if (contract.workerId !== null) {
+                const worker = await User.findByPk(contract.workerId);
+                if (!worker) {
+                    return res.status(404).json({ message: 'Trabajador no encontrado.' });
+                }
+                workerName = worker.fullName;
+            }
+
+            // Agregar los nombres del consumidor y trabajador (si existe) al contrato
+            const contractWithNames = {
+                id: contract.id,
+                consumerId: contract.consumerId,
+                workerId: contract.workerId,
+                specifications: contract.specifications,
+                startDate: contract.startDate,
+                status: contract.status,
+                consumerName: consumer.fullName,
+                workerName: workerName
+            };
+
+            // Agregar el contrato modificado al array
+            contractsWithNames.push(contractWithNames);
+        }
+
+        res.status(200).json(contractsWithNames);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al obtener los contratos.' });
+    }
+});
 
 
 module.exports = router;
